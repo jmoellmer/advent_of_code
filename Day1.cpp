@@ -3,18 +3,15 @@
 //
 
 #include "Day1.h"
-#include <iostream>
 #include <fstream>
-#include <vector>
-using namespace std;
 
-int Day1::max() const {
+int Day1::parseInput() {
+    if (inFileName.empty()) {
+        return -1;
+    }
 
-    string inFileName = "../data/input";
     ifstream inFile;
     inFile.open(inFileName);
-
-    vector<int> caloriesTable{};
 
     int calories = 0;
     if (inFile.is_open()) {
@@ -32,7 +29,5 @@ int Day1::max() const {
         cout << "Cannot open file: " << inFileName << endl;
         return -1;
     }
-
-    auto it = max_element(begin(caloriesTable), end(caloriesTable));
-    return *it;
+    return 0;
 }

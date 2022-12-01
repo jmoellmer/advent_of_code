@@ -7,8 +7,9 @@ int main() {
 
     // Day 1
     cout << "Day 1:" << endl;
-    Day1 d1;
+    Day1 d1("../data/input");
     cout << "\tmax calories = " << d1.max() << endl;
+    cout << "\tsummed top3 = " << d1.top3() << endl;
 
     return 0;
 }
