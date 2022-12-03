@@ -32,6 +32,9 @@ private:
     string input;
 
 private:
+    vector<string> splitLine(const string &line) const;
+    hand getYourHand(bool xyz, const string &y_str, const hand &o) const;
+
     auto pop_play() {
         auto& top = plays.top();
         plays.pop();
@@ -72,6 +75,7 @@ public:
     bool more_scores() const {
         return plays.size() > 0;
     }
+
 };
 
 #endif //ADVENT_OF_CODE_2022_DAY2_H
