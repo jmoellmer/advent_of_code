@@ -39,7 +39,7 @@ private:
     }
 
     bonus winner(hand o, hand y) {
-        if ((o == R && y == R) || (o == P && y == P) || (o == S && y == S))
+        if (o == y)
             return DRAW;
         else if ((y == R && o == S) || (y == S && o == P) || (y == P && o == R))
             return WIN;
