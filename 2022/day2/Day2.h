@@ -14,12 +14,22 @@ static map<string, hand> handMap = {
         {"A", R}, {"B", P}, {"C", S},
         {"X", R}, {"Y", P}, {"Z", S}
 };
+static map<string, bonus> bonusMap = {
+        {"X", LOSE}, {"Y", DRAW}, {"Z", WIN}
+};
+static map<hand, hand> winMap = {
+        {R, P}, {P, S}, {S, R}
+};
+static map<hand, hand> loseMap = {
+        {R, S}, {P, R}, {S, P}
+};
 
 using play = tuple<hand, hand>;
 
 class Day2 {
 private:
     stack<play> plays;
+    string input;
 
 private:
     auto pop_play() {
@@ -29,23 +39,29 @@ private:
     }
 
     bonus winner(hand o, hand y) {
-        if ((o == R && y == R) || (o == P && y == P) || (o == S && y == S)) {
+        if ((o == R && y == R) || (o == P && y == P) || (o == S && y == S))
             return DRAW;
-        } else if ((y == R && o == S) || (y == S && o == P) || (y == P && o == R)) {
+        else if ((y == R && o == S) || (y == S && o == P) || (y == P && o == R))
             return WIN;
-        } else {
+        else
             return LOSE;
-        }
     }
 
 public:
-    Day2(std::string input) {
+    Day2(string input) : input(input) {
         if (!parse(input)) {
             cout << "Error parsing " << input << endl;
         }
     }
 
-    bool parse(string input);
+    void reload() {
+        plays = {};
+        if (!parse(input, true)) {
+            cout << "Error parsing " << input << endl;
+        }
+    }
+
+    bool parse(string input, bool xyz = false);
 
     int pop_score() {
         auto play = pop_play();

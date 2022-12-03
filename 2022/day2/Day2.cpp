@@ -3,7 +3,7 @@
 #include <sstream>
 #include <vector>
 
-bool Day2::parse(string input) {
+bool Day2::parse(string input, bool xyz) {
     ifstream ifs;
     ifs.open(input);
     if (!ifs.is_open())
@@ -19,7 +19,19 @@ bool Day2::parse(string input) {
         }
 
         hand o = handMap[v[0]];
-        hand y= handMap[v[1]];
+        hand y;
+
+        if (xyz) {
+            bonus b = bonusMap[v[1]];
+            switch(b) {
+                case LOSE: y = loseMap[o]; break;
+                case DRAW: y = o; break;
+                case WIN: y = winMap[o]; break;
+            }
+        } else {
+            y = handMap[v[1]];
+        }
+
         plays.push(play{o, y});
     }
 
