@@ -76,6 +76,7 @@ public:
         return plays.size() > 0;
     }
 
+    hand decodePlay(const string &y_str, const hand &o) const;
 };
 
 #endif //ADVENT_OF_CODE_2022_DAY2_H

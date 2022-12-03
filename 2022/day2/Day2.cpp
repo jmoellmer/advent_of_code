@@ -23,26 +23,30 @@ bool Day2::parse(string input, bool xyz) {
 
 hand Day2::getYourHand(bool xyz, const string &y_str, const hand &o) const {
     hand y;
-    if (xyz) {
-        bonus b = bonusMap[y_str];
-        switch(b) {
-            case LOSE: y = loseMap[o]; break;
-            case DRAW: y = o; break;
-            case WIN: y = winMap[o]; break;
-        }
-    } else {
+    if (xyz)
+        y = decodePlay(y_str, o);
+    else
         y = handMap[y_str];
+
+    return y;
+}
+
+hand Day2::decodePlay(const string &y_str, const hand &o) const {
+    hand y;
+    bonus b = bonusMap[y_str];
+    switch(b) {
+        case LOSE: y = loseMap[o]; break;
+        case DRAW: y = o; break;
+        case WIN: y = winMap[o]; break;
     }
     return y;
 }
 
 vector<string> Day2::splitLine(const string &line) const {
+    stringstream ss(line);
+    string hand;
     vector<string> v;
-    istringstream ss(line);
-    while (!ss.eof()) {
-        string hand;
-        getline(ss, hand, ' ');
+    while (ss >> hand)
         v.push_back(hand);
-    }
     return v;
 }
