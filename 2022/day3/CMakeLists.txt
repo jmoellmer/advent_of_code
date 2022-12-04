@@ -11,9 +11,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(day2
-        main.cpp Day2.cpp Day2.h ../day3/ParseFile.h ../day3/Day3.h)
+add_executable(day3
+        main.cpp Day3.cpp Day3.h)
 
-add_executable(tests tests.cpp Day2.cpp ../day3/Day3.h)
+add_executable(tests tests.cpp Day3.cpp)
 target_link_libraries(tests
         PRIVATE Catch2::Catch2WithMain)
