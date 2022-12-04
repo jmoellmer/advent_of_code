@@ -10,19 +10,14 @@ using namespace std;
 
 enum hand {R = 1, P, S};
 enum bonus {LOSE=0, DRAW=3, WIN=6};
+
 static map<string, hand> handMap = {
         {"A", R}, {"B", P}, {"C", S},
-        {"X", R}, {"Y", P}, {"Z", S}
-};
-static map<string, bonus> bonusMap = {
-        {"X", LOSE}, {"Y", DRAW}, {"Z", WIN}
-};
-static map<hand, hand> winMap = {
-        {R, P}, {P, S}, {S, R}
-};
-static map<hand, hand> loseMap = {
-        {R, S}, {P, R}, {S, P}
-};
+        {"X", R}, {"Y", P}, {"Z", S}};
+
+static map<string, bonus> bonusMap = {{"X", LOSE}, {"Y", DRAW}, {"Z", WIN}};
+static map<hand, hand> winMap = {{R, P}, {P, S}, {S, R}};
+static map<hand, hand> loseMap = {{R, S}, {P, R}, {S, P}};
 
 using play = tuple<hand, hand>;
 
@@ -34,6 +29,7 @@ private:
 private:
     vector<string> splitLine(const string &line) const;
     hand getYourHand(bool xyz, const string &y_str, const hand &o) const;
+    hand decodePlay(const string &y_str, const hand &o) const;
 
     auto pop_play() {
         auto& top = plays.top();
@@ -52,16 +48,12 @@ private:
 
 public:
     Day2(string input) : input(input) {
-        if (!parse(input)) {
-            cout << "Error parsing " << input << endl;
-        }
+        parse(input);
     }
 
     void reload() {
         plays = {};
-        if (!parse(input, true)) {
-            cout << "Error parsing " << input << endl;
-        }
+        parse(input, true);
     }
 
     bool parse(string input, bool xyz = false);
@@ -76,7 +68,6 @@ public:
         return plays.size() > 0;
     }
 
-    hand decodePlay(const string &y_str, const hand &o) const;
 };
 
 #endif //ADVENT_OF_CODE_2022_DAY2_H
