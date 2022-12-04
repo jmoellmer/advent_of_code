@@ -13,8 +13,8 @@ using namespace std;
 class Day3 {
 private:
     string input;
-    map<char, int> mmap0;
-    map<char, int> mmap1;
+    map<char, int> m0;
+    map<char, int> m1;
     map<char, int> letter_map;
     int sum{0};
 
@@ -28,27 +28,27 @@ public:
         if (!parse_file(input,
                         [&](const string& line) -> bool {
                             if (!line.empty()) {
-                                mmap0.clear();
-                                mmap1.clear();
+                                m0.clear();
+                                m1.clear();
                                 int n = line.size();
                                 int m = (n / 2);
 
                                 for (int i = 0; i < m; ++i) {
                                     char ch = line[i];
-                                    mmap0.insert(pair{ch, priority(ch)});
+                                    m0.insert(pair{ch, priority(ch)});
                                 }
 
                                 for (int i = m; i < n; ++i) {
                                     char ch = line[i];
-                                    mmap1.insert(pair{ch, priority(ch)});
+                                    m1.insert(pair{ch, priority(ch)});
                                 }
 
-                                map<char, int> union_map;
-                                set_intersection(begin(mmap0), end(mmap0),
-                                                 begin(mmap1), end(mmap1),
-                                                 inserter(union_map, begin(union_map)));
+                                map<char, int> intersect;
+                                set_intersection(begin(m0), end(m0),
+                                                 begin(m1), end(m1),
+                                                 inserter(intersect, begin(intersect)));
 
-                                for (const auto& [k, v] : union_map) {
+                                for (const auto& [k, v] : intersect) {
                                     //cout << "[" << k << "," << v << "], ";
                                     sum += v;
                                 }
