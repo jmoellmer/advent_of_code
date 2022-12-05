@@ -6,6 +6,7 @@
 #include <map>
 #include <cctype>
 #include <algorithm>
+
 using namespace std;
 
 #include "ParseFile.h"
@@ -25,8 +26,9 @@ public:
             letter_map[letter] = i;
         }
 
-        if (!parse_file(input,
-                        [&](const string& line) -> bool {
+        // problem 1
+        if (!parse_file(input, 1, [&](const vector<string>& string_list) -> bool {
+                            string line = string_list[0];
                             if (!line.empty()) {
                                 m0.clear();
                                 m1.clear();
@@ -59,6 +61,50 @@ public:
             cout << "Some error parsing the input file." << endl;
         }
         cout << "priority sum = " << sum << endl;
+
+        // problem 2
+        sum = 0;
+        if (!parse_file(input, 3, [&](const vector<string>& string_list) -> bool {
+            map<char, int> m0, m1, m2;
+            insert(string_list[0], m0);
+            insert(string_list[1], m1);
+            insert(string_list[2], m2);
+
+            map<char, int> m0m1;
+            set_intersection(begin(m0), end(m0),
+                             begin(m1), end(m1),
+                             inserter(m0m1, begin(m0m1)));
+            map<char, int> m0m1m2;
+            set_intersection(begin(m0m1), end(m0m1),
+                             begin(m2), end(m2),
+                             inserter(m0m1m2, begin(m0m1m2)));
+            map_out(m0m1m2);
+
+            for (const auto& [k, v] : m0m1m2)
+                sum += v;
+
+            return true;
+        })) {
+            cout << "Some error parsing the input file." << endl;
+        }
+        cout << "priority sum = " << sum << endl;
+
+    }
+
+    void map_out(map<char, int> &m) {
+        for (const auto& [k, v] : m) {
+            cout << "[" << k << "," << v << "] ";
+        }
+        cout << endl;
+    }
+
+    void insert(const string &line, map<char, int> &m) {
+        int n = line.size();
+        for (int i = 0; i < n; ++i) {
+            char ch = line[i];
+            m.insert(pair{ch, priority(ch)});
+        }
+        cout << line << "(" << n << "," << m.size() << ")" << endl;
     }
 
     int priority(char item) {
