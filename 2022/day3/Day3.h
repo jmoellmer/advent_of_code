@@ -32,18 +32,10 @@ public:
                             if (!line.empty()) {
                                 m0.clear();
                                 m1.clear();
-                                int n = line.size();
-                                int m = (n / 2);
 
-                                for (int i = 0; i < m; ++i) {
-                                    char ch = line[i];
-                                    m0.insert(pair{ch, priority(ch)});
-                                }
-
-                                for (int i = m; i < n; ++i) {
-                                    char ch = line[i];
-                                    m1.insert(pair{ch, priority(ch)});
-                                }
+                                int m = line.length() / 2;
+                                insert(line.substr(0, m), m0);
+                                insert(line.substr(m), m1);
 
                                 map<char, int> intersect;
                                 set_intersection(begin(m0), end(m0),
@@ -78,7 +70,7 @@ public:
             set_intersection(begin(m0m1), end(m0m1),
                              begin(m2), end(m2),
                              inserter(m0m1m2, begin(m0m1m2)));
-            map_out(m0m1m2);
+            //map_out(m0m1m2);
 
             for (const auto& [k, v] : m0m1m2)
                 sum += v;
@@ -104,7 +96,7 @@ public:
             char ch = line[i];
             m.insert(pair{ch, priority(ch)});
         }
-        cout << line << "(" << n << "," << m.size() << ")" << endl;
+        //cout << line << "(" << n << "," << m.size() << ")" << endl;
     }
 
     int priority(char item) {
