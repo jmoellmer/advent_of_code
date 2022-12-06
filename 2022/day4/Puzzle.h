@@ -5,9 +5,7 @@
 #include <sstream>
 #include <set>
 #include "ParseFile.h"
-// 2-8,3-7
-// 3-7,2-8
-// 2,3,7,8
+
 class Puzzle {
 private:
     bool overlap(const vector<int>& sections, int a0, int b0, int a1, int b1) {
