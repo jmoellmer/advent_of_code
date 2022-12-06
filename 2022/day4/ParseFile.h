@@ -17,7 +17,7 @@ static bool parse_file(string input, int num_lines, std::function<bool(const vec
     int i = 0;
     vector<string> string_list;
     for (string line; getline(ifs, line);) {
-        if (line.empty())
+        if (line.empty() || line.find('#') == 0)
             continue;
         string_list.push_back(line); //cout << "." << flush;
         //cout << line << endl;
