@@ -41,13 +41,21 @@ public:
                 int from = stoi(tokens[3]) - 1;
                 int to = stoi(tokens[5]) - 1;
 
-                cout << "move " << move << " from " << from << " to " << to << endl;
-                while (move > 0) {
+                cout << "move " << move << " from " << from + 1 << " to " << to + 1 << endl;
+                vector<char> crates;
+                int m = move;
+                while (m > 0) {
                     char crate = stacks[from].top();
                     stacks[from].pop();
-                    stacks[to].push(crate);
-                    move--;
+                    crates.push_back(crate);
+                    m--;
                 }
+                m = move;
+                while (m > 0) {
+                    stacks[to].push(crates[m-1]);
+                    m--;
+                }
+
 
                 return true;
             } else {
