@@ -11,44 +11,58 @@ using namespace std;
 
 class Puzzle {
     vector<int> cols{};
-    vector<queue<char>> cratesq;
-    vector<stack<char>> crates;
+    vector<string> header;
+    vector<stack<char>> stacks;
 
 public:
     Puzzle(string input) {
         int sum = 0;
 
         // initialize cols
-        for (int i = 1; i < 34; i += 4)
+        int n_cols = 9;
+        int n = (n_cols * 4) - 2;
+        for (int i = 1; i < n; i += 4)
             cols.push_back(i);
-        for (int i = 0; i < 9; i++) {
-            cratesq.push_back(queue<char>{});
-            crates.push_back(stack<char>{});
-        }
+        for (int i = 0; i < n_cols; i++)
+            stacks.push_back(stack<char>{});
 
         // part 1
         if (!parse_file(input, 1, [&](const vector<string> &lines) -> bool {
             string line = lines[0];
-            if (line.find("move") == 0) {
-                cout << "processing line: " << line << endl;
+            if (line.find("#") == 0)
+                return true;
+            else if (line.find("move") == 0) {
+                vector<string> tokens;
+                stringstream ss(line);
+                for (string token; getline(ss, token, ' ');)
+                    tokens.push_back(token);
+
+                int move = stoi(tokens[1]);
+                int from = stoi(tokens[3]) - 1;
+                int to = stoi(tokens[5]) - 1;
+
+                cout << "move " << move << " from " << from << " to " << to << endl;
+                while (move > 0) {
+                    char crate = stacks[from].top();
+                    stacks[from].pop();
+                    stacks[to].push(crate);
+                    move--;
+                }
+
                 return true;
             } else {
-                int n_cols = cols.size();
                 char crate = line[cols[0]];
                 if (crate != '1') {
-                    for (int i = 0; i < n_cols; i++) {
-                        crate = line[cols[i]];
-                        if (crate != ' ') {
-                            cratesq[i].push(crate);
-                        }
-                    }
+                    header.push_back(line);
                 } else if (crate == '1') {
-                    for (int i = 0; i < n_cols; i++) {
-                        while (!cratesq[i].empty()) {
-                            crates[i].push(cratesq[i].front());
-                            cratesq[i].pop();
+                    int n_lines = header.size();
+                    int n_cols = cols.size();
+                    for (int l = n_lines - 1; l >= 0; --l)
+                        for (int s = 0; s < n_cols; ++s) {
+                            crate = header[l][cols[s]];
+                            if (crate != ' ' && crate != '\0')
+                                stacks[s].push(crate);
                         }
-                    }
                 }
             }
             return true;
@@ -56,7 +70,11 @@ public:
             cout << "Some error in the input file." << endl;
         }
 
-        cout << "done." << endl;
+        for (const auto& s : stacks) {
+            if (s.size() > 0)
+                cout << s.top();
+        }
+        cout << "\ndone." << endl;
     }
 };
 
