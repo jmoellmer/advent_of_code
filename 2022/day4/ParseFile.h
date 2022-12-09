@@ -33,7 +33,7 @@ static bool parse_file(string input, int num_lines, std::function<bool(const vec
     return true;
 }
 
-static auto split(const string& line, char delim1=',', char delim2='-') {
+static auto split2(const string& line, char delim1= ',', char delim2= '-') {
     vector<int> tokens;
     stringstream ss(line);
     string token;
