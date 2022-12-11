@@ -79,10 +79,10 @@ TEST_CASE( "Data Structures" ) {
 
 
     cout << "----------" << endl;
-    p.print_tree(p.real_root_, 0);
+    p.print_tree(p.root_, 0);
     cout << "----------" << endl;
 
-    int s = sum_files(p.real_root_);
+    int s = sum_files(p.root_);
 
     REQUIRE(s == 22);
 

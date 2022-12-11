@@ -3,18 +3,16 @@
 
 #include <iostream>
 #include <string>
-#include <unordered_map>
 #include <memory>
-#include <utility>
 #include <map>
-#include <stack>
 using namespace std;
 
 #include "../ParseFile.h"
 
 struct Node {
     Node(string name, int size, shared_ptr<Node> parent) : 
-    name(name), size(size), parent(parent) { }
+        name(name), size(size), parent(parent) { }
+
     string name;
     int size; // a size of -1 means its a directory
     shared_ptr<Node> parent;
@@ -23,30 +21,34 @@ struct Node {
 
 class Puzzle {
 public:
-    shared_ptr<Node> real_root_{nullptr};
     shared_ptr<Node> root_{nullptr};
-    map<string, int> file_size_map_;
+    shared_ptr<Node> current_{nullptr};
+    multimap<string, int> dir_size_map_;
 
 public:
     void build_tree(const vector<string>& tokens) {
         if (tokens[0] == "$" && tokens[1] == "cd") {
             if (tokens[2] == "/") {
-                real_root_ = make_shared<Node>("/", -1, nullptr);
-                root_ = real_root_;
+                if (root_ == nullptr)
+                    root_ = make_shared<Node>("/", -1, nullptr);
+                current_ = root_;
             } else if (tokens[2] == "..") {
                 cout << "go up a directory" << endl;
-                assert(root_->parent != nullptr);
-                root_ = root_->parent;
+                assert(current_ != nullptr);
+                assert(current_->parent != nullptr);
+                current_ = current_->parent;
             } else {
                 string dirname = tokens[2];
                 cout << "cd " << dirname << endl;
-                assert(root_->children.count(dirname) == 1);
-                assert(root_->children[dirname] != nullptr);
-                root_ = root_->children[dirname];
+                assert(current_ != nullptr);
+                assert(current_->children.count(dirname) == 1);
+                assert(current_->children[dirname] != nullptr);
+                current_ = current_->children[dirname];
             }
         } else if (tokens[0] == "$" && tokens[1] == "ls") {
             stack<string> dirs;
-            shared_ptr<Node> tmp = root_;
+            assert(current_ != nullptr);
+            shared_ptr<Node> tmp = current_;
             dirs.push(tmp->name);
             while (tmp->parent != nullptr) {
                 tmp = tmp->parent;
@@ -65,12 +67,14 @@ public:
         } else if (tokens[0] == "dir") { // output is a file
             string dirname = tokens[1];
             cout << "\tdir: " << dirname << endl;
-            root_->children.emplace(dirname, make_shared<Node>(dirname, -1, root_));
+            assert(current_ != nullptr);
+            current_->children.emplace(dirname, make_shared<Node>(dirname, -1, current_));
         } else {
             int filesize = stoi(tokens[0]);
             string filename = tokens[1];
             cout << "\tfile: " << filesize << " " << filename << endl;
-            root_->children.emplace(filename, make_shared<Node>(filename, filesize, root_));
+            assert(current_ != nullptr);
+            current_->children.emplace(filename, make_shared<Node>(filename, filesize, current_));
         }
     }
 
@@ -87,13 +91,13 @@ public:
             cout << "Some error with the input file." << endl;
         }
 
-        print_tree(real_root_, 0);
+        print_tree(root_, 0);
 
-        sum_file_sizes(real_root_);
+        sum_file_sizes(root_);
 
         const int MAX = 100'000;
         int sum = 0;
-        for (auto item : file_size_map_) {
+        for (auto item : dir_size_map_) {
             
             cout << item.first << ": " << item.second;
             if(item.second <= MAX) {
@@ -143,7 +147,7 @@ public:
             sum += node->size;
         else {
             assert(node->size == -1);
-            file_size_map_[node->name] = sum;
+            dir_size_map_.insert(pair<string, int>{node->name, sum});
         }
         
         return sum;
