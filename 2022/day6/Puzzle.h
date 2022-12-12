@@ -55,14 +55,38 @@ public:
             cout << "Some error with the input file." << endl;
         }
 
+        // Part 1
         sum_file_sizes(root_);
 
         int sum = 0;
-        for (auto item : dir_size_map_)
-            if(item.second <= 100'000)
+        for (auto item : dir_size_map_) {
+            cout << item.first << ": " << item.second << endl;
+            if (item.second <= 100'000)
                 sum += item.second;
+        }
 
         cout << "sum of total sizes: " << sum << endl;
+
+        // Part 2
+        const int TOTAL_DISK_SPACE = 70'000'000;
+        const int NEEDED_SPACE = 30'000'000;
+
+        auto item = dir_size_map_.find("/");
+        int unused_space = TOTAL_DISK_SPACE - item->second;
+        cout << "unused space = " << unused_space << endl;
+        int more_space_needed = NEEDED_SPACE - unused_space;
+        cout << "more space needed = " << more_space_needed << endl;
+
+        multimap<int, string> tmp;
+        for (auto item : dir_size_map_)
+           tmp.insert({item.second, item.first});
+
+        for (auto it = begin(tmp); it != end(tmp); ++it) {
+            if ((*it).first >= more_space_needed) {
+                cout << (*it).second << ": " << (*it).first << endl;
+                break;
+            }
+        }
     }
 
     int sum_file_sizes(shared_ptr<Node> node) {
