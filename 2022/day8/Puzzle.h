@@ -11,7 +11,6 @@ using namespace std;
 class Puzzle {
 private:
     vector<vector<int>> input_grid;
-    vector<vector<int>> ans_grid;
     int n_rows=0, n_cols=0;
 
 public:
@@ -27,34 +26,35 @@ public:
 
         assert(n_rows == n_cols);
 
-        ans_grid.resize(n_cols);
-        for (int r = 0; r < n_rows; ++r)
-            ans_grid[r].resize(n_cols);
-
-        for (int i = 0; i < n_rows; ++i)
-            for (int j = 0; j < n_cols; ++j)
-                ans_grid[i][j] = 0;
-
+        // part 1
+        int n_trees = 0;
         for (int i = 1; i < n_rows - 1; ++i) {
             for (int j = 1; j < n_cols - 1; ++j) {
                 if (is_visible(i, j))
-                    ans_grid[i][j] = 1;
-                else
-                    ans_grid[i][j] = 0;
+                   n_trees++;
             }
         }
 
         int halo_trees = 2 * (n_rows) + 2 * (n_cols) - 4;
-        cout << "halo_trees = " << halo_trees << endl;
-        int sum = 0;
+        cout << "visible trees outside the grid: " << n_trees + halo_trees << endl;
+
+        // part 2
+       int max_score = 0;
         for (int i = 1; i < n_rows - 1; ++i)
             for (int j = 1; j < n_cols - 1; ++j)
-                sum += ans_grid[i][j];
+                max_score = max(max_score, scenic_score(i, j));
 
-        cout << "visible trees outside the grid: " << sum + halo_trees << endl;
-
-
+        cout << "highest scenic score = " << max_score << endl;
         cout << "done.";
+    }
+
+    int scenic_score(int row, int col) {
+        int score = 1;
+        score *= n_from_left(row, col);
+        score *= n_from_right(row, col);
+        score *= n_from_top(row, col);
+        score *= n_from_bottom(row, col);
+        return score;
     }
 
     bool is_visible(int row, int col) {
@@ -67,6 +67,63 @@ public:
         else if (see_from_bottom(row, col))
             return true;
         return false;
+    }
+
+    int n_from_left(int row, int col) {
+        if (col == 0) return 0;
+        int n = 0;
+        int h = input_grid[row][col];
+        for (int c = col - 1; c >= 0; --c)
+            if (input_grid[row][c] < h)
+                n++;
+            else if (input_grid[row][c] >= h) {
+                n++;
+                break;
+            }
+        return n;
+    }
+
+    int n_from_right(int row, int col) {
+        if (col == n_cols - 1) return 0;
+        int n = 0;
+        int h = input_grid[row][col];
+        for (int c = col + 1; c < n_cols; ++c)
+            if (input_grid[row][c] < h)
+                n++;
+            else if (input_grid[row][c] >= h) {
+                n++;
+                break;
+            }
+        return n;
+    }
+
+    int n_from_top(int row, int col) {
+        if (row == 0) return 0;
+        int n = 0;
+        int h = input_grid[row][col];
+        for (int r = row - 1; r >= 0; --r)
+            if (input_grid[r][col] < h)
+                n++;
+            else if (input_grid[r][col] >= h) {
+                n++;
+                break;
+            }
+
+        return n;
+    }
+
+    int n_from_bottom(int row, int col) {
+        if (row == n_rows - 1) return 0;
+        int n = 0;
+        int h = input_grid[row][col];
+        for (int r = row + 1; r < n_rows; ++r)
+            if (input_grid[r][col] < h)
+                n++;
+            else if (input_grid[r][col] >= h) {
+                n++;
+                break;
+            }
+        return n;
     }
 
     bool see_from_left(int row, int col) {
@@ -97,7 +154,6 @@ public:
         return true;
     }
 
-
     bool visible(int target_tree, int tree) {
         if (tree >= target_tree)
             return false;
@@ -116,17 +172,7 @@ public:
             ss << lines[0][col];
             ss >> input_grid[n_rows][col];
         }
-
         n_rows++;
-    }
-
-    void print_grid(const vector<vector<int>>& grid) {
-        cout << n_rows << " X " << n_cols << endl;
-        for (int i = 0; i < n_rows; ++i) {
-            for (int j = 0; j < n_cols; ++j)
-                cout << grid[i][j];
-            cout << endl;
-        }
     }
 };
 
