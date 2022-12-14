@@ -134,14 +134,6 @@ public:
     coord dist(coord head, coord tail) {
         return coord{abs(head.first - tail.first), abs(head.second - tail.second)};
     }
-
-    bool same_row(coord head, coord tail) {
-        return head.second == tail.second;
-    }
-
-    bool same_col(coord head, coord tail) {
-        return head.first == tail.first;
-    }
 };
 
 #endif //ADVENT_OF_CODE_PUZZLE_H
