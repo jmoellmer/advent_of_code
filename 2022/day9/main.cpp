@@ -5,6 +5,6 @@ using namespace std;
 
 int main() {
     cout << "Hello, Advent of Code, Day 9!" << endl;
-    Puzzle p("../input_test.txt");
+    Puzzle p("../input.txt");
     return 0;
 }
